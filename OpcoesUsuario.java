@@ -147,6 +147,55 @@ public class OpcoesUsuario {
         }
     }
 
+    public static void informacoesUsuario(List<Usuario> lstUsuario, List<Livro> lstLivro) {
+        System.out.print("Identificacao do Usuario: ");
+        int idUsuario = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        System.out.print("Senha: ");
+        String senha = scanner.nextLine();
+
+        int posicaoUsuario = acharUsuario(lstUsuario, idUsuario);
+        if (posicaoUsuario == -1 || !lstUsuario.get(posicaoUsuario).getSenha().equals(senha)) {
+            System.out.println("Usuario não encontrado ou senha incorreta!\n\n");
+            pause();
+            return;
+        }
+        Usuario usuario = lstUsuario.get(posicaoUsuario);
+        System.out.printf("Login no usuário: %s\n", usuario.getNome());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        limpar();
+
+        System.out.println("<<<<< INFORMAÇÕES DO USUÁRIO >>>>>\n");
+        System.out.printf("Identificacao: %d\n", usuario.getId());
+        System.out.printf("Nome: %s\n", usuario.getNome());
+        System.out.printf("Sexo: %c\n", usuario.getSexo());
+        System.out.printf("Idade: %d\n", usuario.getIdade());
+        System.out.printf("CPF: %s\n", usuario.getCpf());
+        System.out.println("Livros emprestados: ");
+        boolean temLivrosEmprestados = false;
+        for (int livroId : usuario.getLivrosEmprestados()) {
+            if (livroId != -1) {
+                int posicaoLivro = acharLivro(lstLivro, livroId);
+                if (posicaoLivro != -1) {
+                    Livro livro = lstLivro.get(posicaoLivro);
+                    System.out.printf("id: %d - Titulo: %s\n", livro.getCodigo(), livro.getTitulo());
+                    temLivrosEmprestados = true;
+                }
+            }
+        }
+        if (!temLivrosEmprestados) {
+            System.out.println("Nenhum livro emprestado");
+        }
+        System.out.printf("Situação: %c\n", usuario.getSit());
+        pause();
+    }
+
     public static void importarUsuarios(List<Usuario> usuarios) {
         try (BufferedReader br = new BufferedReader(new FileReader("usuarios.txt"))) {
             String line;

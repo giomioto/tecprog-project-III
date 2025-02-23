@@ -55,13 +55,14 @@ public class Main {
 
     private static void menuUsuario(Scanner scanner, ArrayList<Livro> livros, ArrayList<Usuario> usuarios) {
         int opcao = 0;
-        while (opcao != 4) {
+        while (opcao != 5) {
             limpar();
             System.out.println("********* MENU USUÁRIO *********");
             System.out.println("[ 1 ] Listar Livros");
             System.out.println("[ 2 ] Emprestar Livros");
             System.out.println("[ 3 ] Devolver Livro");
-            System.out.println("[ 4 ] Voltar");
+            System.out.println("[ 4 ] Informações do Usuário");
+            System.out.println("[ 5 ] Voltar");
             System.out.println("********************************");
             opcao = scanner.nextInt();
             scanner.nextLine();
@@ -74,7 +75,10 @@ public class Main {
             } else if (opcao == 3) {
                 // Função para devolver livros
                 OpcoesLivro.devolverLivro(livros, usuarios);
-            }
+            } else if (opcao == 4) {
+                // Função para mostrar informações do usuário
+                OpcoesUsuario.informacoesUsuario(usuarios, livros);
+            }            
         }
     }
 
