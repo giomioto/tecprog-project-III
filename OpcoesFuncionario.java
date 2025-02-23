@@ -5,6 +5,7 @@ public class OpcoesFuncionario {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void cadastrarFuncionario(List<Funcionario> lstFuncionario) {
+        limpar();
         Funcionario funcionarioLogin = new Funcionario();
         if (funcionarioLogin.login(lstFuncionario, scanner)) {
             System.out.println("ACESSO PERMITIDO\n");
@@ -38,6 +39,7 @@ public class OpcoesFuncionario {
                 do {
                     System.out.print("Sexo do Funcionario (M/F)....: ");
                     sexo = Character.toUpperCase(scanner.next().charAt(0));
+                    scanner.nextLine(); // Limpa o buffer após next()
                 } while (sexo != 'M' && sexo != 'F');
 
                 System.out.print("Data de nascimento do Funcionario (dd/mm/YY).......: ");
@@ -65,6 +67,7 @@ public class OpcoesFuncionario {
     }
 
     public static void excluirFuncionario(List<Funcionario> lstFuncionario) {
+        limpar();
         System.out.println("<<<<< EXCLUIR FUNCIONARIOS >>>>>\n");
         System.out.print("Identificacao do Funcionario (0 para encerrar): ");
         int idFuncionario = scanner.nextInt();
@@ -90,15 +93,27 @@ public class OpcoesFuncionario {
     }
 
     public static void listarFuncionarios(List<Funcionario> lstFuncionario) {
+        limpar();
+        Funcionario funcionarioLogin = new Funcionario();
+        if (!funcionarioLogin.login(lstFuncionario, scanner)) {
+            System.out.println("ACESSO NEGADO\n");
+            pause();
+            return;
+        }
+        limpar();
         System.out.println("<<<<< LISTAR FUNCIONARIOS >>>>>\n");
         for (Funcionario funcionario : lstFuncionario) {
-            System.out.printf("Identificacao: %d\n", funcionario.getId());
-            System.out.printf("Nome: %s\n", funcionario.getNome());
-            System.out.printf("Sexo: %c\n", funcionario.getSexo());
-            System.out.printf("Idade: %d\n", funcionario.getIdade());
-            System.out.printf("CPF: %s\n", funcionario.getCpf());
-            System.out.println();
+            if (funcionario.getSit() == 'X') {
+                System.out.println("**********************************\n");
+                System.out.printf("Identificacao: %d\n", funcionario.getId());
+                System.out.printf("Nome: %s\n", funcionario.getNome());
+                System.out.printf("Sexo: %c\n", funcionario.getSexo());
+                System.out.printf("Idade: %d\n", funcionario.getIdade());
+                System.out.printf("CPF: %s\n", funcionario.getCpf());
+                System.out.println();
+            }
         }
+        System.out.println("**********************************");
         pause();
     }
 

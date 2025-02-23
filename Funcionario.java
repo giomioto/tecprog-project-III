@@ -26,6 +26,8 @@ public class Funcionario extends Pessoa {
     }
 
     public boolean login(List<Funcionario> lstFuncionario, Scanner scanner) {
+        System.out.println("********* LOGIN FUNCIONÁRIO *********");
+        System.out.println("INSIRA AS CREDENCIAIS PARA ACESSAR O SISTEMA");
         System.out.print("Identificacao: ");
         int id = scanner.nextInt();
         scanner.nextLine();

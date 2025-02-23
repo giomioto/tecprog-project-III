@@ -5,6 +5,7 @@ public class OpcoesUsuario {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void entradaUsuario(List<Usuario> lstUsuario, List<Funcionario> lstFuncionario) {
+        limpar();
         Funcionario funcionario = new Funcionario();
         if (funcionario.login(lstFuncionario, scanner)) {
             System.out.println("ACESSO PERMITIDO\n");
@@ -69,6 +70,7 @@ public class OpcoesUsuario {
 
     public static void excluirUsuario(List<Usuario> lstUsuario, List<Livro> lstLivro,
             List<Funcionario> lstFuncionario) {
+                limpar();
         Funcionario funcionario = new Funcionario();
         if (funcionario.login(lstFuncionario, scanner)) {
             limpar();
@@ -109,6 +111,7 @@ public class OpcoesUsuario {
     }
 
     public static void listarUsuario(List<Usuario> lstUsuario, List<Livro> lstLivro, List<Funcionario> lstFuncionario) {
+        limpar();
         Funcionario funcionario = new Funcionario();
         if (funcionario.login(lstFuncionario, scanner)) {
             limpar();
@@ -148,6 +151,7 @@ public class OpcoesUsuario {
     }
 
     public static void informacoesUsuario(List<Usuario> lstUsuario, List<Livro> lstLivro) {
+        limpar();
         System.out.print("Identificacao do Usuario: ");
         int idUsuario = scanner.nextInt();
         scanner.nextLine(); // consume newline

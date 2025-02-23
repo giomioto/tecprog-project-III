@@ -9,6 +9,7 @@ public class OpcoesLivro {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void entradaLivro(ArrayList<Livro> lstLivro, ArrayList<Funcionario> lstFuncionario) {
+        limpar();
         Funcionario funcionario = new Funcionario();
         if (funcionario.login(lstFuncionario, scanner)) {
             System.out.println("ACESSO PERMITIDO\n");
@@ -68,6 +69,7 @@ public class OpcoesLivro {
 
     public static void excluirLivro(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario,
             ArrayList<Funcionario> lstFuncionario) {
+        limpar();
         Funcionario funcionario = new Funcionario();
         if (funcionario.login(lstFuncionario, scanner)) {
             System.out.println("ACESSO PERMITIDO\n");
@@ -140,6 +142,7 @@ public class OpcoesLivro {
     }
 
     public static void emprestarLivro(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario) {
+        limpar();
         System.out.print("Identificacao do Usuario: ");
         int idUsuario = scanner.nextInt();
         scanner.nextLine(); // consume newline
@@ -181,13 +184,11 @@ public class OpcoesLivro {
                 System.out.println("Livro já emprestado!\n\n");
                 pause();
                 return;
-            } 
-            else if (livro.getSit() == ' ') {
+            } else if (livro.getSit() == ' ') {
                 System.out.println("Livro não está na biblioteca!\n\n");
                 pause();
                 return;
-            }
-            else {
+            } else {
                 System.out.printf("Titulo: %s\n", livro.getTitulo());
             }
             if (idUsuario == 0)
@@ -201,9 +202,10 @@ public class OpcoesLivro {
             }
         }
         pause();
-        }
+    }
 
-        public static void devolverLivro(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario) {
+    public static void devolverLivro(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario) {
+        limpar();
         System.out.print("Identificacao do Usuario: ");
         int idUsuario = scanner.nextInt();
         scanner.nextLine(); // consume newline
@@ -241,22 +243,21 @@ public class OpcoesLivro {
         } else {
             Livro livro = lstLivro.get(posicaoLivro);
             if (livro.getIdUsuario() != idUsuario) {
-            System.out.println("Livro não está emprestado para este usuário!\n\n");
-            pause();
-            return;
+                System.out.println("Livro não está emprestado para este usuário!\n\n");
+                pause();
+                return;
             }
             System.out.printf("Titulo: %s\n", livro.getTitulo());
             if (confirmou("Confirma a devolução? (S/*): ")) {
-            livro.setIdUsuario(-1);
-            usuario.excluirLivro(idLivro);
-            System.out.println("<<<< Confirmado >>>>\n\n\n");
+                livro.setIdUsuario(-1);
+                usuario.excluirLivro(idLivro);
+                System.out.println("<<<< Confirmado >>>>\n\n\n");
             } else {
-            System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
+                System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
             }
         }
         pause();
-        }
-
+    }
 
     public static void importarLivros(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario) {
         try (Scanner fileScanner = new Scanner(new File("livros.txt"))) {
