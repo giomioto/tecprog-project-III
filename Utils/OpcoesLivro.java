@@ -131,6 +131,7 @@ public class OpcoesLivro {
         System.out.println("<<<<< LISTAR LIVROS >>>>>\n\n");
         for (Livro livro : lstLivro) {
             if (livro.getSit() == 'X') {
+                System.out.println("**********************************\n");
                 System.out.printf("Identificacao: %d\n", livro.getCodigo());
                 System.out.printf("Titulo: %s\n", livro.getTitulo());
                 System.out.printf("Autor: %s\n", livro.getAutor());
@@ -143,6 +144,7 @@ public class OpcoesLivro {
                 System.out.printf("Situação: %c\n\n", livro.getSit());
             }
         }
+        System.out.println("**********************************");
         pause();
 
     }
