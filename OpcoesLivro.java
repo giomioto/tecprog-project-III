@@ -8,77 +8,114 @@ import java.io.PrintWriter;
 public class OpcoesLivro {
     private static Scanner scanner = new Scanner(System.in);
 
-    public static void entradaLivro(ArrayList<Livro> lstLivro) {
-        limpar();
-        while (true) {
-            System.out.println("<<<<< CADASTRAR LIVROS >>>>>\n\n");
-            System.out.print("Identificacao (0 para encerrar): ");
+    public static void entradaLivro(ArrayList<Livro> lstLivro, ArrayList<Funcionario> lstFuncionario) {
+        Funcionario funcionario = new Funcionario();
+        if (funcionario.login(lstFuncionario, scanner)) {
+            System.out.println("ACESSO PERMITIDO\n");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            limpar();
+            while (true) {
+                System.out.println("<<<<< CADASTRAR LIVROS >>>>>\n\n");
+                System.out.print("Identificacao (0 para encerrar): ");
+                int idLivro = scanner.nextInt();
+                scanner.nextLine(); // consume newline
+                if (idLivro == 0) {
+                    pause();
+                    return;
+                }
+                ;
+
+                if (acharLivro(lstLivro, idLivro) != -1) {
+                    System.out.println("Livro já cadastrado!\n\n");
+                    pause();
+                    continue;
+                }
+
+                System.out.print("\nTitulo do Livro.........: ");
+                String titulo = scanner.nextLine();
+
+                System.out.print("Autor do Livro..........: ");
+                String autor = scanner.nextLine();
+
+                System.out.print("Ano de Publicacao.......: ");
+                int ano = scanner.nextInt();
+                scanner.nextLine(); // consume newline
+
+                if (confirmou("Confirma o cadastro? (S/*): ")) {
+                    Livro livro = new Livro(idLivro, titulo, autor, ano, 'X');
+                    lstLivro.add(livro);
+                    System.out.println("<<<< Confirmado >>>>\n\n\n");
+                } else {
+                    System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
+                }
+
+                pause();
+            }
+        } else {
+            System.out.println("ACESSO NEGADO\n");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void excluirLivro(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario,
+            ArrayList<Funcionario> lstFuncionario) {
+        Funcionario funcionario = new Funcionario();
+        if (funcionario.login(lstFuncionario, scanner)) {
+            System.out.println("ACESSO PERMITIDO\n");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            limpar();
+            System.out.println("<<<<< EXCLUIR LIVROS >>>>>\n\n");
+            System.out.print("Identificacao do Livro (0 para encerrar): ");
             int idLivro = scanner.nextInt();
             scanner.nextLine(); // consume newline
             if (idLivro == 0) {
                 pause();
                 return;
-            };
-
-            if (acharLivro(lstLivro, idLivro) != -1) {
-                System.out.println("Livro já cadastrado!\n\n");
-                pause();
-                continue;
             }
+            ;
 
-            System.out.print("\nTitulo do Livro.........: ");
-            String titulo = scanner.nextLine();
-
-            System.out.print("Autor do Livro..........: ");
-            String autor = scanner.nextLine();
-
-            System.out.print("Ano de Publicacao.......: ");
-            int ano = scanner.nextInt();
-            scanner.nextLine(); // consume newline
-
-            if (confirmou("Confirma o cadastro? (S/*): ")) {
-                Livro livro = new Livro(idLivro, titulo, autor, ano, 'X');
-                lstLivro.add(livro);
-                System.out.println("<<<< Confirmado >>>>\n\n\n");
+            int posicao = acharLivro(lstLivro, idLivro);
+            if (posicao == -1) {
+                System.out.println("Livro não encontrado!\n\n");
             } else {
-                System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
-            }
-
-            pause();
-        }
-    }
-
-    public static void excluirLivro(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario) {
-        limpar();
-        System.out.println("<<<<< EXCLUIR LIVROS >>>>>\n\n");
-        System.out.print("Identificacao do Livro (0 para encerrar): ");
-        int idLivro = scanner.nextInt();
-        scanner.nextLine(); // consume newline
-        if (idLivro == 0){
-            pause();
-            return;
-        };
-
-        int posicao = acharLivro(lstLivro, idLivro);
-        if (posicao == -1) {
-            System.out.println("Livro não encontrado!\n\n");
-        } else {
-            if (confirmou("Confirma a exclusão? (S/*): ")) {
-                Livro livro = lstLivro.get(posicao);
-                livro.setSit(' ');
-                int idUsuario = livro.getIdUsuario();
-                int posicaoUsuario = acharUsuario(lstUsuario, idUsuario);
-                if (posicaoUsuario != -1) {
-                    Usuario usuario = lstUsuario.get(posicaoUsuario);
-                    usuario.excluirLivro(idLivro);
+                if (confirmou("Confirma a exclusão? (S/*): ")) {
+                    Livro livro = lstLivro.get(posicao);
+                    livro.setSit(' ');
+                    int idUsuario = livro.getIdUsuario();
+                    int posicaoUsuario = acharUsuario(lstUsuario, idUsuario);
+                    if (posicaoUsuario != -1) {
+                        Usuario usuario = lstUsuario.get(posicaoUsuario);
+                        usuario.excluirLivro(idLivro);
+                    }
+                    System.out.printf("Id do Livro: %d | Posicao: %d | Nome: %s\n", idLivro, posicao,
+                            livro.getTitulo());
+                    System.out.println("<<<< Confirmado >>>>\n\n\n");
+                } else {
+                    System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
                 }
-                System.out.printf("Id do Livro: %d | Posicao: %d | Nome: %s\n", idLivro, posicao, livro.getTitulo());
-                System.out.println("<<<< Confirmado >>>>\n\n\n");
-            } else {
-                System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
+            }
+            pause();
+        } else {
+            System.out.println("ACESSO NEGADO\n");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
-        pause();
     }
 
     public static void listarLivro(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario) {
@@ -99,9 +136,31 @@ public class OpcoesLivro {
             }
         }
         pause();
+
     }
 
     public static void emprestarLivro(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario) {
+        System.out.print("Identificacao do Usuario: ");
+        int idUsuario = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        System.out.print("Senha: ");
+        String senha = scanner.nextLine();
+
+        int posicaoUsuario = acharUsuario(lstUsuario, idUsuario);
+        if (posicaoUsuario == -1 || !lstUsuario.get(posicaoUsuario).getSenha().equals(senha)) {
+            System.out.println("Usuario não encontrado ou senha incorreta!\n\n");
+            pause();
+            return;
+        }
+        Usuario usuario = lstUsuario.get(posicaoUsuario);
+        System.out.printf("Login no usuário: %s\n", usuario.getNome());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         limpar();
         System.out.println("<<<<< EMPRESTAR LIVRO >>>>>\n\n");
         System.out.print("Identificacao do Livro (0 para encerrar): ");
@@ -110,7 +169,8 @@ public class OpcoesLivro {
         if (idLivro == 0) {
             pause();
             return;
-        };
+        }
+        ;
 
         int posicaoLivro = acharLivro(lstLivro, idLivro);
         if (posicaoLivro == -1) {
@@ -121,33 +181,50 @@ public class OpcoesLivro {
                 System.out.println("Livro já emprestado!\n\n");
                 pause();
                 return;
-            } else {
+            } 
+            else if (livro.getSit() == ' ') {
+                System.out.println("Livro não está na biblioteca!\n\n");
+                pause();
+                return;
+            }
+            else {
                 System.out.printf("Titulo: %s\n", livro.getTitulo());
             }
-            System.out.print("Identificacao do Usuario: (0 para encerrar): ");
-            int idUsuario = scanner.nextInt();
-            scanner.nextLine(); // consume newline
-            if (idUsuario == 0) return;
+            if (idUsuario == 0)
+                return;
 
-            int posicaoUsuario = acharUsuario(lstUsuario, idUsuario);
-            if (posicaoUsuario == -1) {
-                System.out.println("Usuario não encontrado!\n\n");
+            if (confirmou("Confirma requisição para empréstimo? (S/*): ")) {
+                livro.setIdUsuario(idUsuario);
+                usuario.setLivrosEmprestados(idLivro);
             } else {
-                Usuario usuario = lstUsuario.get(posicaoUsuario);
-                System.out.printf("Nome: %s\n", usuario.getNome());
-                if (confirmou("Confirma requisição para empréstimo? (S/*): ")) {
-                    livro.setIdUsuario(idUsuario);
-                    usuario.setLivrosEmprestados(idLivro);
-                    System.out.println("<<<< Confirmado >>>>\n\n\n");
-                } else {
-                    System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
-                }
+                System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
             }
         }
         pause();
-    }
+        }
 
-    public static void devolverLivro(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario) {
+        public static void devolverLivro(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario) {
+        System.out.print("Identificacao do Usuario: ");
+        int idUsuario = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        System.out.print("Senha: ");
+        String senha = scanner.nextLine();
+
+        int posicaoUsuario = acharUsuario(lstUsuario, idUsuario);
+        if (posicaoUsuario == -1 || !lstUsuario.get(posicaoUsuario).getSenha().equals(senha)) {
+            System.out.println("Usuario não encontrado ou senha incorreta!\n\n");
+            pause();
+            return;
+        }
+        Usuario usuario = lstUsuario.get(posicaoUsuario);
+        System.out.printf("Login no usuário: %s\n", usuario.getNome());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         limpar();
         System.out.println("<<<<< DEVOLVER LIVRO >>>>>\n\n");
         System.out.print("Identificacao do Livro (0 para encerrar): ");
@@ -156,35 +233,30 @@ public class OpcoesLivro {
         if (idLivro == 0) {
             pause();
             return;
-        };
+        }
 
         int posicaoLivro = acharLivro(lstLivro, idLivro);
         if (posicaoLivro == -1) {
             System.out.println("Livro não encontrado!\n\n");
         } else {
             Livro livro = lstLivro.get(posicaoLivro);
-            if (livro.getIdUsuario() == -1) {
-                System.out.println("Livro não emprestado!\n\n");
-                pause();
-                return;
+            if (livro.getIdUsuario() != idUsuario) {
+            System.out.println("Livro não está emprestado para este usuário!\n\n");
+            pause();
+            return;
             }
-            int idUsuario = livro.getIdUsuario();
-            int posicaoUsuario = acharUsuario(lstUsuario, idUsuario);
-            if (posicaoUsuario == -1) {
-                System.out.println("Usuario não encontrado!\n\n");
+            System.out.printf("Titulo: %s\n", livro.getTitulo());
+            if (confirmou("Confirma a devolução? (S/*): ")) {
+            livro.setIdUsuario(-1);
+            usuario.excluirLivro(idLivro);
+            System.out.println("<<<< Confirmado >>>>\n\n\n");
             } else {
-                if (confirmou("Confirma a devolução? (S/*): ")) {
-                    livro.setIdUsuario(-1);
-                    Usuario usuario = lstUsuario.get(posicaoUsuario);
-                    usuario.excluirLivro(idLivro);
-                    System.out.println("<<<< Confirmado >>>>\n\n\n");
-                } else {
-                    System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
-                }
+            System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
             }
         }
         pause();
-    }
+        }
+
 
     public static void importarLivros(ArrayList<Livro> lstLivro, ArrayList<Usuario> lstUsuario) {
         try (Scanner fileScanner = new Scanner(new File("livros.txt"))) {
@@ -260,7 +332,7 @@ public class OpcoesLivro {
         scanner.nextLine();
         limpar();
     }
-    
+
     public static void limpar() {
         try {
             System.out.println("\n".repeat(10));

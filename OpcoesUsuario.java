@@ -4,112 +4,147 @@ import java.util.*;
 public class OpcoesUsuario {
     private static Scanner scanner = new Scanner(System.in);
 
-    public static void entradaUsuario(List<Usuario> lstUsuario) {
-        limpar();
-        while (true) {
-            System.out.println("<<<<< CADASTRAR USUARIOS >>>>>\n");
-            System.out.print("Identificacao (0 para encerrar): ");
+    public static void entradaUsuario(List<Usuario> lstUsuario, List<Funcionario> lstFuncionario) {
+        Funcionario funcionario = new Funcionario();
+        if (funcionario.login(lstFuncionario, scanner)) {
+            System.out.println("ACESSO PERMITIDO\n");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            limpar();
+
+            while (true) {
+                System.out.println("<<<<< CADASTRAR USUARIOS >>>>>\n");
+                System.out.print("Identificacao (0 para encerrar): ");
+                int idUsuario = scanner.nextInt();
+                scanner.nextLine(); // Limpa o buffer após next()
+
+                if (idUsuario == 0) {
+                    pause();
+                    return;
+                }
+
+                if (acharUsuario(lstUsuario, idUsuario) != -1) {
+                    System.out.println("Identificação já cadastrada!\n");
+                    pause();
+                    continue;
+                }
+
+                System.out.print("\nNome do Usuario.........: ");
+                String nome = scanner.nextLine();
+
+                char sexo;
+                do {
+                    System.out.print("Sexo do Usuario (M/F)....: ");
+                    sexo = Character.toUpperCase(scanner.next().charAt(0));
+                    scanner.nextLine(); // Limpa o buffer após next()
+                } while (sexo != 'M' && sexo != 'F');
+
+                System.out.print("Data de nascimento do Usuario (dd/mm/YY).......: ");
+                String[] dataNasc = scanner.nextLine().split("/");
+
+                System.out.print("CPF do Usuario.......: ");
+                String cpf = scanner.next();
+                scanner.nextLine(); // Limpa o buffer
+
+                System.out.print("Senha do Usuario.......: ");
+                String senha = scanner.nextLine();
+
+                if (confirmou("Confirma o cadastro? (S/*): ", scanner)) {
+                    Usuario usuario = new Usuario(idUsuario, nome, sexo, dataNasc, cpf, senha, 'X');
+                    lstUsuario.add(usuario);
+                    System.out.println("<<<< Confirmado >>>>\n\n\n");
+                } else {
+                    System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
+                }
+                pause();
+            }
+        } else {
+            System.out.println("ACESSO NEGADO\n");
+            pause();
+        }
+    }
+
+    public static void excluirUsuario(List<Usuario> lstUsuario, List<Livro> lstLivro,
+            List<Funcionario> lstFuncionario) {
+        Funcionario funcionario = new Funcionario();
+        if (funcionario.login(lstFuncionario, scanner)) {
+            limpar();
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("<<<<< EXCLUIR USUARIOS >>>>>\n");
+            System.out.print("Identificacao do Usuario (0 para encerrar): ");
             int idUsuario = scanner.nextInt();
-            scanner.nextLine(); // consume newline
             if (idUsuario == 0) {
                 pause();
                 return;
-            };
-
-            if (acharUsuario(lstUsuario, idUsuario) != -1) {
-                System.out.println("Identificação já cadastrada!\n");
-                pause();
-                continue;
             }
+            ;
 
-            scanner.nextLine(); // consume newline
-            System.out.print("\nNome do Usuario.........: ");
-            String nome = scanner.nextLine();
-
-            char sexo;
-            do {
-                System.out.print("Sexo do Usuario (M/F)....: ");
-                sexo = Character.toUpperCase(scanner.next().charAt(0));
-            } while (sexo != 'M' && sexo != 'F');
-
-            System.out.print("Idade do Usuario.......: ");
-            int idade = scanner.nextInt();
-
-            System.out.print("CPF do Usuario.......: ");
-            int cpf = scanner.nextInt();
-
-            if (confirmou("Confirma o cadastro? (S/*): ", scanner)) {
-                Usuario usuario = new Usuario(idUsuario, nome, sexo, idade, cpf, 'X');
-                lstUsuario.add(usuario);
-                System.out.println("<<<< Confirmado >>>>\n\n\n");
+            int posicao = acharUsuario(lstUsuario, idUsuario);
+            if (posicao == -1) {
+                System.out.println("Usuario não encontrado!\n");
             } else {
-                System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
-            }
-            pause();
-        }
-    }
-
-    public static void excluirUsuario(List<Usuario> lstUsuario, List<Livro> lstLivro) {
-        limpar();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("<<<<< EXCLUIR USUARIOS >>>>>\n");
-        System.out.print("Identificacao do Usuario (0 para encerrar): ");
-        int idUsuario = scanner.nextInt();
-        if (idUsuario == 0) {
-            pause();
-            return;
-        };
-
-        int posicao = acharUsuario(lstUsuario, idUsuario);
-        if (posicao == -1) {
-            System.out.println("Usuario não encontrado!\n");
-        } else {
-            if (confirmou("Confirma a exclusão? (S/*): ", scanner)) {
-                Usuario usuario = lstUsuario.get(posicao);
-                System.out.printf("Id do usuario: %d | Posicao: %d | Nome: %s\n", idUsuario, posicao, usuario.getNome());
-                usuario.setSit(' ');
-                for (Livro livro : lstLivro) {
-                    if (livro.getIdUsuario() == idUsuario) {
-                        livro.setIdUsuario(-1);
-                    }
-                }
-                System.out.println("<<<< Confirmado >>>>\n\n\n");
-            } else {
-                System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
-            }
-        }
-        pause();
-    }
-
-    public static void listarUsuario(List<Usuario> lstUsuario, List<Livro> lstLivro) {
-        limpar();
-        System.out.println("<<<<< LISTAR USUARIOS >>>>>\n");
-        for (Usuario usuario : lstUsuario) {
-            if (usuario.getSit() == 'X') {
-                System.out.printf("Identificacao: %d\n", usuario.getId());
-                System.out.printf("Nome: %s\n", usuario.getNome());
-                System.out.printf("Sexo: %c\n", usuario.getSexo());
-                System.out.printf("Idade: %d\n", usuario.getIdade());
-                System.out.printf("CPF: %d\n", usuario.getCpf());
-                System.out.println("Livros emprestados: ");
-                boolean temLivrosEmprestados = false;
-                for (int livroId : usuario.getLivrosEmprestados()) {
-                    if (livroId != -1) {
-                        int posicaoLivro = acharLivro(lstLivro, livroId);
-                        if (posicaoLivro != -1) {
-                            Livro livro = lstLivro.get(posicaoLivro);
-                            System.out.printf("id: %d - Titulo: %s\n", livro.getCodigo(), livro.getTitulo());
-                            temLivrosEmprestados = true;
+                if (confirmou("Confirma a exclusão? (S/*): ", scanner)) {
+                    Usuario usuario = lstUsuario.get(posicao);
+                    System.out.printf("Id do usuario: %d | Posicao: %d | Nome: %s\n", idUsuario, posicao,
+                            usuario.getNome());
+                    usuario.setSit(' ');
+                    for (Livro livro : lstLivro) {
+                        if (livro.getIdUsuario() == idUsuario) {
+                            livro.setIdUsuario(-1);
                         }
                     }
+                    System.out.println("<<<< Confirmado >>>>\n\n\n");
+                } else {
+                    System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
                 }
-                if (!temLivrosEmprestados) {
-                    System.out.println("Nenhum livro emprestado");
-                }
-                System.out.printf("Situação: %c\n\n", usuario.getSit());
             }
+            pause();
+        } else {
+            System.out.println("ACESSO NEGADO\n");
+            pause();
         }
-        pause();
+    }
+
+    public static void listarUsuario(List<Usuario> lstUsuario, List<Livro> lstLivro, List<Funcionario> lstFuncionario) {
+        Funcionario funcionario = new Funcionario();
+        if (funcionario.login(lstFuncionario, scanner)) {
+            limpar();
+            System.out.println("<<<<< LISTAR USUARIOS >>>>>\n");
+            for (Usuario usuario : lstUsuario) {
+                if (usuario.getSit() == 'X') {
+                    System.out.println("**********************************");
+                    System.out.printf("Identificacao: %d\n", usuario.getId());
+                    System.out.printf("Nome: %s\n", usuario.getNome());
+                    System.out.printf("Sexo: %c\n", usuario.getSexo());
+                    System.out.printf("Idade: %d\n", usuario.getIdade());
+                    System.out.printf("CPF: %s\n", usuario.getCpf());
+                    System.out.println("Livros emprestados: ");
+                    boolean temLivrosEmprestados = false;
+                    for (int livroId : usuario.getLivrosEmprestados()) {
+                        if (livroId != -1) {
+                            int posicaoLivro = acharLivro(lstLivro, livroId);
+                            if (posicaoLivro != -1) {
+                                Livro livro = lstLivro.get(posicaoLivro);
+                                System.out.printf("id: %d - Titulo: %s\n", livro.getCodigo(), livro.getTitulo());
+                                temLivrosEmprestados = true;
+                            }
+                        }
+                    }
+                    if (!temLivrosEmprestados) {
+                        System.out.println("Nenhum livro emprestado");
+                    }
+                    System.out.printf("Situação: %c\n", usuario.getSit());
+                }
+            }
+            System.out.println("**********************************");
+            pause();
+        } else {
+            System.out.println("ACESSO NEGADO\n");
+            pause();
+        }
     }
 
     public static void importarUsuarios(List<Usuario> usuarios) {
@@ -120,21 +155,22 @@ public class OpcoesUsuario {
                 int id = Integer.parseInt(parts[0]);
                 String nome = parts[1];
                 char sexo = parts[2].charAt(0);
-                int idade = Integer.parseInt(parts[3]);
-                int cpf = Integer.parseInt(parts[4]);
-                char situacao = parts[5].charAt(0);
-                usuarios.add(new Usuario(id, nome, sexo, idade, cpf, situacao));
+                String[] dataNasc = parts[3].split("/");
+                String cpf = parts[4].isEmpty() ? "" : parts[4];
+                String senha = parts[5];
+                char situacao = parts[6].charAt(0);
+                usuarios.add(new Usuario(id, nome, sexo, dataNasc, cpf, senha, situacao));
             }
         } catch (IOException e) {
             System.out.println("Erro ao abrir o arquivo usuarios.txt");
         }
     }
 
-
     public static void exportarUsuario(List<Usuario> usuarios) {
         try (PrintWriter pw = new PrintWriter(new FileWriter("usuarios.txt"))) {
             for (Usuario usuario : usuarios) {
-                pw.printf("%d;%s;%c;%d;%d;%c\n", usuario.getId(), usuario.getNome(), usuario.getSexo(), usuario.getIdade(), usuario.getCpf(), usuario.getSit());
+                pw.printf("%d;%s;%c;%s;%s;%s;%c\n", usuario.getId(), usuario.getNome(), usuario.getSexo(),
+                        usuario.getDataNasc(), usuario.getCpf(), usuario.getSenha(), usuario.getSit());
             }
         } catch (IOException e) {
             System.out.println("Erro ao abrir o arquivo usuarios.txt");
@@ -171,7 +207,7 @@ public class OpcoesUsuario {
         scanner.nextLine();
         limpar();
     }
-    
+
     public static void limpar() {
         try {
             System.out.println("\n".repeat(10));

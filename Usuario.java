@@ -1,21 +1,20 @@
 import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 
-public class Usuario {
-    private int id;
-    private String nome;
-    private char sexo;
-    private int idade;
-    private int cpf;
+public class Usuario extends Pessoa {
+    private String senha;
     private char sit;
     private int[] livrosEmprestados;
     private static final int MAXLIVROS = 5;
 
-    public Usuario(int id, String nome, char sexo, int idade, int cpf, char sit) {
-        this.id = id;
-        this.nome = nome;
-        this.sexo = sexo;
-        this.idade = idade;
-        this.cpf = cpf;
+    public Usuario(int id, String nome, char sexo, String[] dataNasc, String cpf, String senha, char sit) {
+        setId(id);
+        setNome(nome);
+        setSexo(sexo);
+        setDataNasc(new Data(Integer.parseInt(dataNasc[0]), Integer.parseInt(dataNasc[1]), Integer.parseInt(dataNasc[2])));
+        setCpf(cpf);
+        this.senha = senha;
         this.sit = sit;
         this.livrosEmprestados = new int[MAXLIVROS];
         Arrays.fill(this.livrosEmprestados, 0);
@@ -27,46 +26,6 @@ public class Usuario {
 
     public void setSit(char sit) {
         this.sit = sit;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public char getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(char sexo) {
-        this.sexo = sexo;
-    }
-
-    public int getIdade() {
-        return idade;
-    }
-
-    public void setIdade(int idade) {
-        this.idade = idade;
-    }
-
-    public int getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(int cpf) {
-        this.cpf = cpf;
     }
 
     public int[] getLivrosEmprestados() {
@@ -109,8 +68,33 @@ public class Usuario {
         return -1;
     }
 
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public boolean login(List<Usuario> lstUsuario, Scanner scanner) {
+        System.out.print("Identificacao: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Senha: ");
+        String senha = scanner.nextLine();
+
+        int pos = acharUsuario(lstUsuario.toArray(new Usuario[lstUsuario.size()]), id);
+
+        if (pos != -1 && lstUsuario.get(pos).getSenha().equals(senha)) {
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     public String toString() {
-        return String.format("ID: %d\nNome: %s\nSexo: %c\nIdade: %d\nCPF: %d\nSituação: %c\n", id, nome, sexo, idade, cpf, sit);
+        return String.format("ID: %d\nNome: %s\nSexo: %s\nIdade: %d\nCPF: %s\nSituação: %c\n", getId(), getNome(), getSexo(), getIdade(), getCpf(), sit);
     }
 }
