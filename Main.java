@@ -1,5 +1,5 @@
 /*--------------------------
- * PROJETO FINAL II
+ * PROJETO FINAL III
  * -------------------------
  * ESTUDANTE: GIOVANNI MIOTO
  * RA: 2603454
@@ -7,6 +7,14 @@
  */
 
 import java.util.Scanner;
+
+import Classes.Funcionario;
+import Utils.OpcoesFuncionario;
+import Utils.OpcoesLivro;
+import Utils.OpcoesUsuario;
+import Classes.Usuario;
+import Classes.Livro;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
