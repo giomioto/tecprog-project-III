@@ -71,28 +71,41 @@ public class OpcoesFuncionario {
 
     public static void excluirFuncionario(List<Funcionario> lstFuncionario) {
         limpar();
-        System.out.println("<<<<< EXCLUIR FUNCIONARIOS >>>>>\n");
-        System.out.print("Identificacao do Funcionario (0 para encerrar): ");
-        int idFuncionario = scanner.nextInt();
-        if (idFuncionario == 0) {
-            pause();
-            return;
-        }
-
-        int posicao = acharFuncionario(lstFuncionario, idFuncionario);
-        if (posicao == -1) {
-            System.out.println("Funcionario não encontrado!\n");
-        } else {
-            System.out.printf("Nome: %s\n", lstFuncionario.get(posicao).getNome());
-            if (confirmou("Confirma a exclusão? (S/*): ", scanner)) {
-                Funcionario funcionario = lstFuncionario.get(posicao);
-                funcionario.setSit(' ');
-                System.out.println("<<<< Confirmado >>>>\n\n\n");
-            } else {
-                System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
+        Funcionario funcionarioLogin = new Funcionario();
+        if (funcionarioLogin.login(lstFuncionario, scanner)) {
+            System.out.println("ACESSO PERMITIDO\n");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            limpar();
+            System.out.println("<<<<< EXCLUIR FUNCIONARIOS >>>>>\n");
+            System.out.print("Identificacao do Funcionario (0 para encerrar): ");
+            int idFuncionario = scanner.nextInt();
+            if (idFuncionario == 0) {
+                pause();
+                return;
+            }
+
+            int posicao = acharFuncionario(lstFuncionario, idFuncionario);
+            if (posicao == -1) {
+                System.out.println("Funcionario não encontrado!\n");
+            } else {
+                System.out.printf("Nome: %s\n", lstFuncionario.get(posicao).getNome());
+                if (confirmou("Confirma a exclusão? (S/*): ", scanner)) {
+                    Funcionario funcionario = lstFuncionario.get(posicao);
+                    funcionario.setSit(' ');
+                    System.out.println("<<<< Confirmado >>>>\n\n\n");
+                } else {
+                    System.out.println("<<<< Não Confirmado >>>>\n\n\n\n");
+                }
+            }
+            pause();
+        } else {
+            System.out.println("ACESSO NEGADO\n");
+            pause();
         }
-        pause();
     }
 
     public static void listarFuncionarios(List<Funcionario> lstFuncionario) {
